@@ -1,4 +1,5 @@
 ﻿using System;
+#pragma warning disable S3776
 
 namespace LookingForArrayElements
 {

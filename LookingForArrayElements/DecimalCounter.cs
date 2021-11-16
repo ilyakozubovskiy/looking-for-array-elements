@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-
 #pragma warning disable S2368
+#pragma warning disable S3776
 
 namespace LookingForArrayElements
 {
@@ -43,19 +42,20 @@ namespace LookingForArrayElements
                 return 0;
             }
 
-            List<decimal> suitable = new List<decimal>();
+            var suitable = Array.Empty<decimal>();
             for (int i = 0; i < arrayToSearch.Length; i++)
             {
                 for (int j = 0; j < ranges.Length; j++)
                 {
-                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && Dublicates(ref suitable, ref arrayToSearch[i]))
+                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && !Array.Exists<decimal>(suitable, value => value == arrayToSearch[i]))
                     {
-                        suitable.Add(arrayToSearch[i]);
+                        Array.Resize(ref suitable, suitable.Length + 1);
+                        suitable[suitable.Length - 1] = arrayToSearch[i];
                     }
                 }
             }
 
-            return suitable.Count;
+            return suitable.Length;
         }
 
         /// <summary>
@@ -116,32 +116,20 @@ namespace LookingForArrayElements
                 throw new ArgumentOutOfRangeException(nameof(count), "startIndex + count > arrayToSearch.Length");
             }
 
-            List<decimal> suitable = new List<decimal>();
+            var suitable = Array.Empty<decimal>();
             for (int i = startIndex; i < startIndex + count; i++)
             {
                 for (int j = 0; j < ranges.Length; j++)
                 {
-                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && Dublicates(ref suitable, ref arrayToSearch[i]))
+                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && !Array.Exists<decimal>(suitable, value => value == arrayToSearch[i]))
                     {
-                        suitable.Add(arrayToSearch[i]);
+                       Array.Resize(ref suitable, suitable.Length + 1);
+                       suitable[suitable.Length - 1] = arrayToSearch[i];
                     }
                 }
             }
 
-            return suitable.Count;
-        }
-
-        private static bool Dublicates(ref List<decimal> collection, ref decimal value)
-        {
-            foreach (var item in collection)
-            {
-                if (item == value)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return suitable.Length;
         }
     }
 }
