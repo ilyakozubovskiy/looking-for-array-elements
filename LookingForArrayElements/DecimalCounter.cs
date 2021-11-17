@@ -47,7 +47,7 @@ namespace LookingForArrayElements
             {
                 for (int j = 0; j < ranges.Length; j++)
                 {
-                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && !Array.Exists<decimal>(suitable, value => value == arrayToSearch[i]))
+                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && Dublicate(ref suitable, ref arrayToSearch[i]))
                     {
                         Array.Resize(ref suitable, suitable.Length + 1);
                         suitable[suitable.Length - 1] = arrayToSearch[i];
@@ -121,7 +121,7 @@ namespace LookingForArrayElements
             {
                 for (int j = 0; j < ranges.Length; j++)
                 {
-                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && !Array.Exists<decimal>(suitable, value => value == arrayToSearch[i]))
+                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && Dublicate(ref suitable, ref arrayToSearch[i]))
                     {
                        Array.Resize(ref suitable, suitable.Length + 1);
                        suitable[suitable.Length - 1] = arrayToSearch[i];
@@ -130,6 +130,19 @@ namespace LookingForArrayElements
             }
 
             return suitable.Length;
+        }
+
+        private static bool Dublicate(ref decimal[] array, ref decimal value)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == value)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
