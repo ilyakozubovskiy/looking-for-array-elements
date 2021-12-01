@@ -1,5 +1,4 @@
 ﻿using System;
-#pragma warning disable S3776
 
 namespace LookingForArrayElements
 {
@@ -29,7 +28,7 @@ namespace LookingForArrayElements
                 throw new ArgumentNullException(nameof(rangeEnd));
             }
 
-            if (rangeStart.Length == 0 && rangeEnd.Length == 0)
+            if (rangeStart.Length == 0 || rangeEnd.Length == 0)
             {
                 return 0;
             }
@@ -39,12 +38,13 @@ namespace LookingForArrayElements
                 throw new ArgumentException("Arrays of range starts and range ends contain different number of elements.");
             }
 
-            if (rangeStart[0] > rangeEnd[0] && rangeStart[rangeStart.Length - 1] > rangeEnd[rangeStart.Length - 1])
+            if (rangeStart[0] > rangeEnd[0] && rangeStart[^1] > rangeEnd[^1])
             {
                 throw new ArgumentException("The range start value is greater than the range end value.");
             }
 
             int sum = 0;
+
             for (int i = 0; i < arrayToSearch.Length; i++)
             {
                 for (int j = 0; j < rangeStart.Length; j++)
@@ -90,7 +90,7 @@ namespace LookingForArrayElements
                 throw new ArgumentOutOfRangeException(nameof(startIndex), "startIndex is less than zero");
             }
 
-            if (rangeStart.Length == 0 && rangeEnd.Length == 0)
+            if (rangeStart.Length == 0 || rangeEnd.Length == 0)
             {
                 return 0;
             }
@@ -100,7 +100,7 @@ namespace LookingForArrayElements
                 throw new ArgumentException("Arrays of range starts and range ends contain different number of elements.");
             }
 
-            if (rangeStart[0] > rangeEnd[0] || rangeStart[rangeStart.Length - 1] > rangeEnd[rangeStart.Length - 1])
+            if (rangeStart[0] > rangeEnd[0] || rangeStart[^1] > rangeEnd[^1])
             {
                 throw new ArgumentException("The range start value is greater than the range end value.");
             }
@@ -120,19 +120,28 @@ namespace LookingForArrayElements
                 throw new ArgumentOutOfRangeException(nameof(count), "startIndex + count > arrayToSearch.Length");
             }
 
-            int sum = 0;
-            for (int i = startIndex; i < startIndex + count; i++)
+            int i = startIndex, sum = 0;
+            do
             {
-                for (int j = 0; j < rangeStart.Length; j++)
-                {
-                    if (arrayToSearch[i] >= rangeStart[j] && arrayToSearch[i] <= rangeEnd[j])
-                    {
-                        sum++;
-                    }
-                }
+                CountSum(ref sum, ref arrayToSearch, ref rangeStart, ref rangeEnd, ref i);
             }
+            while (++i < startIndex + count);
 
             return sum;
+        }
+
+        private static void CountSum(ref int sum, ref float[] arrayToSearch, ref float[] rangeStart, ref float[] rangeEnd, ref int i)
+        {
+            int j = 0;
+            while (j < rangeStart.Length)
+            {
+                if (arrayToSearch[i] >= rangeStart[j] && arrayToSearch[i] <= rangeEnd[j])
+                {
+                    sum++;
+                }
+
+                j++;
+            }
         }
     }
 }

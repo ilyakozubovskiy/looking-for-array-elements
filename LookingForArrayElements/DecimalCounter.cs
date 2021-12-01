@@ -1,6 +1,5 @@
 ﻿using System;
 #pragma warning disable S2368
-#pragma warning disable S3776
 
 namespace LookingForArrayElements
 {
@@ -24,36 +23,35 @@ namespace LookingForArrayElements
                 throw new ArgumentNullException(nameof(ranges));
             }
 
-            for (int i = 0; i < ranges.Length; i++)
+            int index = 0;
+
+            while (index < ranges.Length)
             {
-                if (ranges[i] == null)
+                if (ranges[index] == null)
                 {
                     throw new ArgumentNullException(nameof(ranges));
                 }
 
-                if (ranges[i].Length != 2 && ranges[i].Length != 0)
+                if (ranges[index].Length != 2 && ranges[index].Length != 0)
                 {
                     throw new ArgumentException("Arrays of range starts and range ends contain different number of elements.");
                 }
+
+                index++;
             }
 
-            if (arrayToSearch.Length == 0 && ranges.Length == 0)
+            if (arrayToSearch.Length == 0 || ranges.Length == 0)
             {
                 return 0;
             }
 
+            int i = 0;
             var suitable = Array.Empty<decimal>();
-            for (int i = 0; i < arrayToSearch.Length; i++)
+            do
             {
-                for (int j = 0; j < ranges.Length; j++)
-                {
-                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && Dublicate(ref suitable, ref arrayToSearch[i]))
-                    {
-                        Array.Resize(ref suitable, suitable.Length + 1);
-                        suitable[suitable.Length - 1] = arrayToSearch[i];
-                    }
-                }
+                FindSuitableElements(ref suitable, ref ranges, ref arrayToSearch, ref i);
             }
+            while (++i < arrayToSearch.Length);
 
             return suitable.Length;
         }
@@ -91,11 +89,6 @@ namespace LookingForArrayElements
                 }
             }
 
-            if (arrayToSearch.Length == 0 && ranges.Length == 0)
-            {
-                return 0;
-            }
-
             if (startIndex < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), "startIndex is less than zero");
@@ -119,14 +112,7 @@ namespace LookingForArrayElements
             var suitable = Array.Empty<decimal>();
             for (int i = startIndex; i < startIndex + count; i++)
             {
-                for (int j = 0; j < ranges.Length; j++)
-                {
-                    if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && Dublicate(ref suitable, ref arrayToSearch[i]))
-                    {
-                       Array.Resize(ref suitable, suitable.Length + 1);
-                       suitable[suitable.Length - 1] = arrayToSearch[i];
-                    }
-                }
+                FindSuitableElements(ref suitable, ref ranges, ref arrayToSearch, ref i);
             }
 
             return suitable.Length;
@@ -143,6 +129,18 @@ namespace LookingForArrayElements
             }
 
             return true;
+        }
+
+        private static void FindSuitableElements(ref decimal[] suitable, ref decimal[][] ranges, ref decimal[] arrayToSearch, ref int i)
+        {
+            for (int j = 0; j < ranges.Length; j++)
+            {
+                if (ranges[j].Length != 0 && arrayToSearch[i] >= ranges[j][0] && arrayToSearch[i] <= ranges[j][1] && Dublicate(ref suitable, ref arrayToSearch[i]))
+                {
+                    Array.Resize(ref suitable, suitable.Length + 1);
+                    suitable[^1] = arrayToSearch[i];
+                }
+            }
         }
     }
 }

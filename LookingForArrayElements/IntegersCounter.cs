@@ -77,16 +77,21 @@ namespace LookingForArrayElements
                 throw new ArgumentOutOfRangeException(nameof(count), "startIndex + count > arrayToSearch.Length");
             }
 
-            int sum = 0;
-            for (int i = 0; i < elementsToSearchFor.Length; i++)
+            int i = 0, sum = 0;
+            while (i < elementsToSearchFor.Length)
             {
-                for (int j = startIndex; j < startIndex + count; j++)
+                int j = startIndex;
+                while (j < startIndex + count)
                 {
                     if (arrayToSearch[j] == elementsToSearchFor[i])
                     {
                         sum++;
                     }
+
+                    j++;
                 }
+
+                i++;
             }
 
             return sum;
